@@ -1,0 +1,1124 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>星核代理</title><style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,-apple-system,"MiSans","PingFang SC","HarmonyOS Sans SC","Noto Sans SC","Microsoft YaHei",sans-serif;background:#F7F7F5;color:#1A1A1A;padding:0 20px 160px}
+.big-title{font-size:46px;font-weight:800;color:#1A1A1A;padding:26px 2px 6px;letter-spacing:1px}
+.group-title{font-size:20px;font-weight:600;color:#8A8A8E;padding:26px 4px 10px}
+.page{display:none}.page.active{display:block}
+.card{background:#fff;border:1px solid #E9E9E6;border-radius:16px;padding:16px;margin-bottom:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:#8A8A8E;font-size:13px}.small{font-size:12px;color:#8A8A8E}
+.btn{border:none;border-radius:12px;padding:11px 16px;font-size:15px;font-weight:600;background:#34C759;color:#fff;cursor:pointer}
+.btn.ghost{background:#F0F0ED;color:#1A1A1A}.btn.danger{background:#FDECEA;color:#D64541}.btn.small{padding:7px 12px;font-size:13px}
+input,select,textarea,button,.btn,.mini-toggle{font-family:inherit}
+input,select,textarea{width:100%;padding:12px 14px;border:1px solid #DDDDDA;border-radius:14px;font-size:15px;background:#fff;color:#1A1A1A;margin:6px 0;outline:none}
+input::placeholder,textarea::placeholder{color:#A8A8AD}
+label{font-size:14px;color:#8A8A8E}
+.node{display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid #EDEDEA;cursor:pointer}
+.node:last-child{border-bottom:none}.node.sel{background:#EAF6EC;border-radius:14px}
+.node .nm{flex:1;min-width:0}.node .nm b{display:block;font-size:15px;font-weight:600;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.node .flag{font-size:20px;line-height:1}
+.node .check{color:#1E9E4A;font-size:18px;font-weight:700;flex:none}
+.badge{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:#F0F0ED;color:#8A8A8E;white-space:nowrap;font-variant-numeric:tabular-nums}
+.badge.good{background:#E5F6EA;color:#1E9E4A}.badge.mid{background:#FDF3DC;color:#B45309}.badge.bad{background:#FDECEA;color:#D64541}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;width:70%;min-width:280px;max-width:420px;background:#fff;border:1px solid #E9E9E6;border-radius:999px;display:flex;padding:6px;z-index:6;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+nav button{flex:1;border:none;background:transparent;padding:8px 0 7px;font-size:12px;color:#8A8A8E;border-radius:999px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+nav button.on{background:#EAF6EC;color:#1A1A1A;font-weight:700}
+nav button .nav-ic{font-size:22px;line-height:1;font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif;display:flex;align-items:center;justify-content:center}
+/* 首页大圆开关 */
+.power-wrap{display:flex;justify-content:center;margin:22px 0 20px}
+.power{width:300px;height:300px;border-radius:50%;border:1px solid #E0E0DC;background:#F0F0ED;cursor:pointer;position:relative;padding:0}
+.power-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:200px;height:200px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#1A1A1A;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.power.on{border-color:#34C759;background:#34C759}
+.power.on .power-core{background:#34C759;color:#fff;box-shadow:none}
+.power-ico{display:flex;align-items:center;justify-content:center;line-height:1}.power-ico svg{display:block;width:52px;height:52px}.power-txt{font-size:19px;font-weight:600}
+.node-country{text-align:center;font-size:34px;font-weight:700;color:#1A1A1A;margin:6px 0 14px;cursor:pointer}
+.node-country .flag,.node .flag{font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif;line-height:1;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle}
+.speed-pill{display:flex;align-items:center;justify-content:center;gap:18px;margin:0 auto 8px;width:fit-content;max-width:100%;background:#fff;border:1px solid #E9E9E6;border-radius:999px;padding:10px 26px;color:#8A8A8E;font-size:17px;font-variant-numeric:tabular-nums}
+.speed-pill b{color:#1A1A1A;font-weight:600}
+.uptime{text-align:center;color:#A8A8AD;font-size:12px;margin-bottom:26px;font-variant-numeric:tabular-nums}
+.sub-line{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid #E9E9E6;border-radius:16px;padding:16px 18px;cursor:pointer;font-size:15px;color:#1A1A1A}
+#subLineText{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sub-line .chev{color:#C7C7CC;font-size:22px;flex:none}
+.plan-card{background:#fff;border:1px solid #E9E9E6;border-radius:16px;padding:22px 20px;cursor:pointer;display:flex;flex-direction:column}
+.plan-name{font-size:22px;font-weight:700;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;word-break:break-all;overflow-wrap:anywhere;min-width:0}
+.plan-expire{font-size:16px;color:#8A8A8E;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plan-remain-label{font-size:14px;color:#8A8A8E;margin-top:26px}
+.plan-remain{font-size:22px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums;color:#1A1A1A}.plan-remain span{color:#8A8A8E;font-size:16px;font-weight:400}
+.progress{height:8px;border-radius:99px;background:#ECECE9;margin-top:12px;overflow:hidden}
+.progress-fill{height:100%;border-radius:99px;background:#34C759;width:0%}
+/* 首页三段模式切换 */
+.mode-seg{display:flex;gap:4px;width:fit-content;max-width:100%;margin:0 auto 14px;background:#F0F0ED;border-radius:999px;padding:4px}
+.mode-seg button{flex:1 1 0;min-width:0;border:none;background:transparent;font-size:14px;font-weight:600;color:#8A8A8E;padding:7px 22px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.mode-seg button.on{background:#EAF6EC;color:#1A1A1A;font-weight:700}
+/* 订阅列表卡片 */
+.sub-item .sub-name{flex:1;min-width:0;font-weight:600;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub-item .tag{flex:none}
+.sub-url{font-size:12px;color:#8A8A8E;margin:6px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;word-break:break-all;overflow-wrap:anywhere}
+/* 订阅页按钮组：三颗同宽、单行不折行 */
+.sub-actions .btn{flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;padding:11px 4px}
+/* 设置页 */
+.set-card{background:#fff;border:1px solid #E9E9E6;border-radius:16px;overflow:hidden;margin-bottom:8px}
+.srow{display:flex;align-items:center;gap:14px;padding:15px 18px;cursor:pointer;position:relative}
+.srow+.srow::before{content:"";position:absolute;top:0;left:76px;right:0;height:1px;background:#EDEDEA}
+.srow .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif;flex:none}
+.srow .st{flex:1;font-size:18px;font-weight:500;color:#1A1A1A;min-width:0}
+.srow .val{color:#8A8A8E;font-size:15px;white-space:nowrap}
+.srow .chev{color:#C7C7CC;font-size:22px}
+.adv-chev{transition:transform .2s;display:inline-block}
+.adv-chev.open{transform:rotate(90deg)}
+#advBody{border-top:1px solid #EDEDEA}
+.subhead{display:flex;align-items:center;gap:14px;padding-top:20px}
+.subhead .back{color:#1E9E4A;font-size:17px;cursor:pointer;white-space:nowrap}
+.subhead .big-title{padding:0}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-end;z-index:20}
+#modal.open{display:flex}.sheet{background:#fff;color:#1A1A1A;width:100%;max-width:480px;margin:0 auto;max-height:62vh;overflow:auto;border-radius:24px 24px 0 0;padding:20px}
+#appToast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(8px);background:#fff;color:#1A1A1A;font-size:14px;padding:9px 16px;border-radius:999px;max-width:80%;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.12);border:1px solid #E9E9E6}
+#appToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.sheet h3{font-size:20px;margin-bottom:10px}
+pre.log{background:#F5F5F3;color:#1A1A1A;font-size:11px;padding:12px;border-radius:12px;white-space:pre-wrap;max-height:300px;overflow:auto}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #EDEDEA;font-size:15px}
+.kv span{color:#8A8A8E}.kv b{color:#1A1A1A;text-align:right;font-weight:600}
+.empty{text-align:center;color:#8A8A8E;padding:28px 10px;font-size:15px;line-height:1.8}
+.tag{display:inline-block;background:#EAF6EC;color:#1E9E4A;border-radius:6px;padding:2px 8px;font-size:12px;margin-right:4px}
+.mini-toggle{border:none;border-radius:999px;padding:7px 16px;font-size:14px;font-weight:700;background:#F0F0ED;color:#8A8A8E;cursor:pointer}
+.mini-toggle.on{background:#34C759;color:#fff}
+.optrow{display:flex;align-items:center;justify-content:space-between;padding:16px 4px;border-bottom:1px solid #EDEDEA;font-size:17px;cursor:pointer}
+.optrow:last-child{border-bottom:none}
+.sub-alert{display:none;background:#FDF3DC;color:#8A5A00;border-radius:14px;padding:10px 14px;font-size:14px;margin:14px 0 0;line-height:1.6}
+.sub-alert.show{display:block}
+.app-row{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid #EDEDEA;cursor:pointer}
+.app-row:last-child{border-bottom:none}
+.app-row .anm{flex:1;min-width:0}.app-row .anm b{display:block;font-size:15px;font-weight:500;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app-row .anm span{font-size:12px;color:#8A8A8E}
+.conn{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #EDEDEA}
+.conn:last-child{border-bottom:none}
+.conn .cm{flex:1;min-width:0}.conn .cm b{display:block;font-size:14px;font-weight:500;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conn .cm span{font-size:12px;color:#8A8A8E}
+</style></head><body>
+<div id="page-home" class="page active">
+  <h1 class="big-title">星核代理</h1>
+  <div class="power-wrap"><button id="powerBtn" class="power" onclick="toggleConnect()"><span class="power-core"><span class="power-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg></span><span class="power-txt">未连接</span></span></button></div>
+  <div id="curNode" class="node-country" onclick="showTab('nodes')">🌐 自动选择</div>
+  <div class="mode-seg" id="modeSeg"><button id="modeSegRule" onclick="setMode('rule')">规则</button><button id="modeSegGlobal" onclick="setMode('global')">全局</button><button id="modeSegDirect" onclick="setMode('direct')">直连</button></div>
+  <div class="speed-pill"><span>↓ <b id="downRate">0 B/s</b></span><span>|</span><span>↑ <b id="upRate">0 B/s</b></span></div>
+  <p id="uptime" class="uptime">运行时长 00:00:00</p>
+  <p id="connState" style="display:none">核心未运行</p>
+  <div class="sub-line" onclick="showTab('subs')"><span id="subLineText">未添加订阅</span><span class="chev">›</span></div>
+  <div id="subAlert" class="sub-alert"></div>
+  <div style="display:none"><span id="upTotal">0 B</span><span id="downTotal">0 B</span><span id="nodeCount">0</span><span id="subCount">0</span></div>
+</div>
+
+<div id="page-nodes" class="page">
+  <div class="subhead"><span class="back" onclick="showTab('home')">‹ 返回</span><h1 class="big-title">节点</h1></div>
+  <div class="card"><input id="nodeSearch" placeholder="搜索节点名称 / 服务器" oninput="renderNodes()">
+  <div class="row" style="margin-top:6px"><button class="btn" onclick="testAllReal()">真延迟</button><button class="btn ghost" id="nodeManageBtn" onclick="toggleNodeManage()">管理</button><button class="btn ghost" id="nodeSortBtn" style="display:none" onclick="sortByDelay()">按延迟排序</button></div></div>
+  <div class="card" id="nodeList"></div>
+</div>
+
+<div id="page-subs" class="page">
+  <h1 class="big-title">个人中心</h1>
+  <div class="card" style="padding:12px 18px"><div class="row"><span class="muted">累计下行</span><b id="statDown">—</b><span class="muted">累计上行</span><b id="statUp">—</b></div></div>
+  <div class="plan-card" style="margin-bottom:14px" onclick="showTab('subs')">
+    <div class="plan-name" id="planName">未添加订阅</div>
+    <div class="plan-expire" id="planExpire">—</div>
+    <div class="plan-remain-label">剩余</div>
+    <div class="plan-remain"><b id="planRemain">—</b></div>
+    <div class="progress"><div id="planProgress" class="progress-fill"></div></div>
+  </div>
+  <div class="card"><h3 style="margin-bottom:6px">添加订阅</h3>
+    <label>订阅链接</label><input id="subUrl" placeholder="https://...">
+    <label>名称（可选）</label><input id="subName" placeholder="例如：我的订阅">
+    <label>识别码（可选）</label><input id="subSite" placeholder="可留空">
+    <div class="row sub-actions"><button class="btn" onclick="addSubscription()">保存并拉取</button><button class="btn ghost" onclick="scanQr()">扫码添加</button><button class="btn ghost" onclick="openImport()">粘贴导入</button></div>
+  </div>
+  <div class="card" id="subList"></div>
+  <div class="card"><h3>导出配置</h3>
+  <div class="row sub-actions" style="margin-top:8px"><button class="btn ghost" onclick="exportConfig()">导出配置</button><button class="btn ghost" onclick="showConfig()">查看配置</button></div></div>
+</div>
+
+<div id="page-rules" class="page">
+  <div class="subhead"><span class="back" onclick="showTab('settings')">‹ 返回</span><h1 class="big-title">分流规则</h1></div>
+  <div class="card"><div class="row"><button class="btn" onclick="addRule()">新增规则</button><button class="btn ghost" onclick="resetRules()">恢复默认</button></div></div>
+  <div class="card" id="ruleList"></div>
+</div>
+
+<div id="page-conns" class="page">
+  <div class="subhead"><span class="back" onclick="showTab('settings')">‹ 返回</span><h1 class="big-title">实时连接</h1></div>
+  <p class="small" style="padding:0 4px 10px">只显示进行中的连接</p>
+  <div class="card" style="padding:12px 18px"><div class="row"><span class="muted">累计下行</span><b id="connDownTotal">—</b><span class="muted">累计上行</span><b id="connUpTotal">—</b></div></div>
+  <div class="group-title" style="padding-top:8px">进行中</div>
+  <div class="card" id="connList"><div class="empty">未连接</div></div>
+  <div class="group-title">最近连接</div>
+  <div class="card" id="recentList"><div class="empty">暂无</div></div>
+</div>
+
+<div id="page-settings" class="page">
+  <h1 class="big-title">设置</h1>
+  <div class="set-card">
+    <div class="srow" onclick="showTab('subs')"><span class="ic" style="background:#34C759">📥</span><span class="st">订阅管理</span><span class="chev">›</span></div>
+    <div class="srow" onclick="openModeSheet()"><span class="ic" style="background:#FF9500">🔀</span><span class="st">代理模式</span><span class="val" id="modeVal">规则</span><span class="chev">›</span></div>
+    <div class="srow" onclick="openAppSheet()"><span class="ic" style="background:#AF52DE">📱</span><span class="st">按 App 分流</span><span class="val" id="appModeVal">全部走代理</span><span class="chev">›</span></div>
+    <div class="srow" onclick="showTab('conns')"><span class="ic" style="background:#64D2FF">📡</span><span class="st">实时连接</span><span class="chev">›</span></div>
+    <div class="srow" onclick="openAboutSheet()"><span class="ic" style="background:#8A8A8E">ℹ️</span><span class="st">关于</span><span class="chev">›</span></div>
+  </div>
+  <div class="set-card">
+    <div class="srow" onclick="toggleAdvanced()"><span class="ic" style="background:#8A8A8E">⚙️</span><span class="st">高级设置</span><span class="chev adv-chev" id="advChev">›</span></div>
+    <div id="advBody" style="display:none">
+    <div class="srow" onclick="toggleLan()"><span class="ic" style="background:#1E9E4A">🌐</span><span class="st">局域网共享代理</span><span class="val" id="lanVal">关</span><span class="chev">›</span></div>
+    <div class="srow" onclick="showTab('rules')"><span class="ic" style="background:#ff9500">📋</span><span class="st">自定义规则</span><span class="chev">›</span></div>
+    <div class="srow" onclick="showTab('rules')"><span class="ic" style="background:#af52de">🔍</span><span class="st">分流规则覆写</span><span class="chev">›</span></div>
+    <div class="srow" onclick="toggleSniffer()"><span class="ic" style="background:#ff3b30">🔄</span><span class="st">HTTPS 重写 (MitM)</span><span class="val" id="snifferVal">关</span><span class="chev">›</span></div>
+    <div class="srow" onclick="syncAllSubs()"><span class="ic" style="background:#1E9E4A">☁️</span><span class="st">同步订阅</span><span class="chev">›</span></div>
+    <div class="srow" onclick="openSubAutoSheet()"><span class="ic" style="background:#30d158">⏰</span><span class="st">订阅自动更新</span><span class="val" id="subAutoVal">每天</span><span class="chev">›</span></div>
+    <div class="srow" onclick="viewLog()"><span class="ic" style="background:#5856d6">🕐</span><span class="st">连接记录</span><span class="chev">›</span></div>
+    <div class="srow" onclick="testAll();showTab('nodes')"><span class="ic" style="background:#ff9500">📶</span><span class="st">延迟测速</span><span class="chev">›</span></div>
+    <div class="srow"><span class="ic" style="background:#30d158">⚡</span><span class="st">按需连接</span><button id="tunBtn" class="mini-toggle" onclick="event.stopPropagation();toggleTun()">开启</button></div>
+    <div class="srow" onclick="openPortSheet()"><span class="ic" style="background:#1E9E4A">🌐</span><span class="st">隧道端口</span><span class="chev">›</span></div>
+    </div>
+  </div>
+  <div style="display:none">
+    <input id="setMixed" type="number" value="7890">
+    <input id="setExt" type="number" value="9090">
+    <input id="setLan" type="checkbox">
+    <input id="setTun" type="checkbox" checked>
+    <input id="setDns" type="checkbox" checked>
+    <select id="setLog"><option>info</option><option>debug</option><option>warning</option><option>error</option></select>
+  </div>
+</div>
+
+<nav>
+  <button class="on" onclick="showTab('home',this)"><span class="nav-ic">🏠</span><span>首页</span></button>
+  <button onclick="showTab('subs',this)"><span class="nav-ic">👤</span><span>个人中心</span></button>
+  <button onclick="showTab('settings',this)"><span class="nav-ic">⚙️</span><span>设置</span></button>
+</nav>
+<div id="appToast"></div>
+<div id="modal"><div class="sheet" id="sheet"></div></div>
+<script>
+"use strict";
+function $(id){return document.getElementById(id)}
+var _toastTimer=null;
+function toast(m){ var el=$("appToast"); if(!el) return; el.textContent=m; el.classList.add("show"); if(_toastTimer) clearTimeout(_toastTimer); _toastTimer=setTimeout(function(){ el.classList.remove("show"); },1800); }
+function hasBridge(){ return !!window.AndroidBridge; }
+function fmtB(n){ n=+n||0; if(n<1024) return n+" B"; if(n<1048576) return (n/1024).toFixed(1)+" KB"; if(n<1073741824) return (n/1048576).toFixed(2)+" MB"; return (n/1073741824).toFixed(2)+" GB"; }
+function fmtGB(n){ return (n/1000000000).toFixed(1); }
+function fmtRate(n){ return fmtB(n)+"/s"; }
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function b64d(s){ s=String(s||"").replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; try{ return decodeURIComponent(escape(atob(s))); }catch(e){ try{ return atob(s); }catch(e2){ return ""; } } }
+function b64e(s){ return btoa(unescape(encodeURIComponent(s))); }
+var COUNTRIES=[["日本","🇯🇵"],["香港","🇭🇰"],["台湾","🇹🇼"],["美国","🇺🇸"],["新加坡","🇸🇬"],["韩国","🇰🇷"],["英国","🇬🇧"],["德国","🇩🇪"],["法国","🇫🇷"],["加拿大","🇨🇦"],["澳大利亚","🇦🇺"],["澳洲","🇦🇺"],["泰国","🇹🇭"],["马来西亚","🇲🇾"],["印度","🇮🇳"],["荷兰","🇳🇱"],["俄罗斯","🇷🇺"],["土耳其","🇹🇷"],["印尼","🇮🇩"],["印度尼西亚","🇮🇩"],["菲律宾","🇵🇭"],["越南","🇻🇳"],["巴西","🇧🇷"],["意大利","🇮🇹"],["西班牙","🇪🇸"],["瑞士","🇨🇭"],["瑞典","🇸🇪"],["挪威","🇳🇴"],["芬兰","🇫🇮"],["爱尔兰","🇮🇪"],["奥地利","🇦🇹"],["波兰","🇵🇱"],["捷克","🇨🇿"],["葡萄牙","🇵🇹"],["希腊","🇬🇷"],["以色列","🇮🇱"],["阿联酋","🇦🇪"],["迪拜","🇦🇪"],["沙特","🇸🇦"],["埃及","🇪🇬"],["南非","🇿🇦"],["墨西哥","🇲🇽"],["阿根廷","🇦🇷"],["智利","🇨🇱"],["新西兰","🇳🇿"]];
+function countryOf(name){
+  if(!name||name==="DIRECT") return "🌐 自动选择";
+  for(var i=0;i<COUNTRIES.length;i++){ if(name.indexOf(COUNTRIES[i][0])>=0) return COUNTRIES[i][1]+" "+COUNTRIES[i][0]; }
+  return "🌐 "+name;
+}
+var DEFAULT_RULES=[
+ {type:"DOMAIN-SUFFIX",value:"google.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"youtube.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"github.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"openai.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"chatgpt.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"telegram.org",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"twitter.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"x.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"instagram.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"facebook.com",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"wikipedia.org",target:"PROXY"},
+ {type:"DOMAIN-SUFFIX",value:"baidu.com",target:"DIRECT"},
+ {type:"DOMAIN-SUFFIX",value:"qq.com",target:"DIRECT"},
+ {type:"DOMAIN-SUFFIX",value:"taobao.com",target:"DIRECT"},
+ {type:"DOMAIN-SUFFIX",value:"jd.com",target:"DIRECT"},
+ {type:"DOMAIN-SUFFIX",value:"weixin.qq.com",target:"DIRECT"},
+ {type:"DOMAIN-SUFFIX",value:"bilibili.com",target:"DIRECT"},
+ {type:"DOMAIN-SUFFIX",value:"163.com",target:"DIRECT"},
+ {type:"GEOIP",value:"CN",target:"DIRECT"},
+ {type:"MATCH",value:"",target:"PROXY"}
+];
+var state={nodes:[],subs:[],rules:JSON.parse(JSON.stringify(DEFAULT_RULES)),settings:{mixed:7890,ext:9090,allowLan:false,tun:true,dns:true,log:"info",sniffer:false,theme:"light",autoSelect:false,subAutoUpdate:24,appMode:"off",appList:[]},selected:"DIRECT",mode:"rule",connected:false,coreRunning:false,uptimeSec:0,traffic:{up:0,down:0},history:[],recentConns:[]};
+function save(){ try{localStorage.setItem("xh_state_v1",JSON.stringify({nodes:state.nodes,subs:state.subs,rules:state.rules,settings:state.settings,selected:state.selected,mode:state.mode})); if(hasBridge()) AndroidBridge.saveSettings(JSON.stringify(state.settings)); }catch(e){} }
+function load(){ try{var s=JSON.parse(localStorage.getItem("xh_state_v1")||"null"); if(s){state.nodes=sanitizeNodes(s.nodes||[],[],[]).nodes;state.subs=s.subs||[];state.rules=s.rules&&s.rules.length?s.rules:JSON.parse(JSON.stringify(DEFAULT_RULES));state.settings=Object.assign(state.settings,s.settings||{});state.settings.theme="light";state.selected=s.selected||"DIRECT";state.mode=s.mode||"rule";if(state.selected!=="DIRECT"&&!state.nodes.some(function(x){return x.name===state.selected;})) state.selected="DIRECT";}}catch(e){} }
+var SUPPORTED_TYPES=["vmess","vless","trojan","ss","hysteria2","hysteria","anytls","tuic"];
+function nodeKey(n){
+  var p=[String(n.type||""), String(n.server||"").toLowerCase(), parseInt(n.port,10)||0];
+  if(n.uuid) p.push("u:"+n.uuid);
+  if(n.password) p.push("p:"+n.password);
+  if(n.cipher) p.push("c:"+n.cipher);
+  if(n.network) p.push("n:"+n.network);
+  if(n.wsPath) p.push("w:"+n.wsPath);
+  if(n.grpcService) p.push("g:"+n.grpcService);
+  if(n.servername) p.push("sn:"+n.servername);
+  if(n.sni) p.push("sni:"+n.sni);
+  if(n.flow) p.push("f:"+n.flow);
+  if(n.auth_str) p.push("a:"+n.auth_str);
+  if(n.obfs) p.push("o:"+n.obfs);
+  if(n.congestion) p.push("cc:"+n.congestion);
+  return p.join("|");
+}
+function sanitizeNodes(nodes, existingNames, existingKeys){
+  var used={}, seenKeys={}, out=[], skipped=0, dupSkipped=0, skipReasons=[];
+  function note(reason){ if(skipReasons.length<3 && skipReasons.indexOf(reason)<0) skipReasons.push(reason); }
+  (existingNames||[]).forEach(function(n){ used[n]=1; });
+  (existingKeys||[]).forEach(function(k){ seenKeys[k]=1; });
+  (nodes||[]).forEach(function(n){
+    if(!n){ skipped++; note("空节点"); return; }
+    var server=String(n.server||"").trim();
+    var port=parseInt(n.port,10);
+    if(!server||isNaN(port)||port<1||port>65535){ skipped++; note("缺少服务器或端口"); return; }
+    if(SUPPORTED_TYPES.indexOf(n.type)<0){ skipped++; note("不支持的协议："+(n.type||"未知")); return; }
+    if(n.type==="ss"&&/^2022-/.test(String(n.cipher||""))){ var _need={"2022-blake3-aes-128-gcm":16,"2022-blake3-aes-256-gcm":32,"2022-blake3-chacha20-poly1305":32}[String(n.cipher)]; if(_need){ var _pw=String(n.password||"").trim().replace(/-/g,"+").replace(/_/g,"/"); var _ok=false; try{ _ok=(atob(_pw).length===_need); }catch(e){ _ok=false; } if(!_ok){ skipped++; note("SS 2022 密钥长度不符"); return; } } }
+    var key=nodeKey(n);
+    if(seenKeys[key]){ dupSkipped++; note("与已有节点重复（同服务器、端口与账号）"); return; }
+    seenKeys[key]=1;
+    var name=String(n.name||server).trim()||server;
+    if(/^(DIRECT|REJECT|PROXY|AUTO|FALLBACK)$/i.test(name)) name=name+" (节点)";
+    if(used[name]!=null){ var k=2; while(used[name+" ("+k+")"]!=null) k++; name=name+" ("+k+")"; }
+    used[name]=1;
+    var c={}; for(var fld in n) c[fld]=n[fld];
+    c.name=name; c.server=server; c.port=port;
+    out.push(c);
+  });
+  return {nodes:out, skipped:skipped, dupSkipped:dupSkipped, skipReasons:skipReasons};
+}
+var _quietUpdate=false;
+var _subAlertToasted={};
+function applyTheme(){ document.body.classList.remove("light"); }
+function showTab(t,btn){ if(t!=="conns") stopConnPolling(); document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active")}); var pg=$("page-"+t); if(pg) pg.classList.add("active"); document.querySelectorAll("nav button").forEach(function(b){b.classList.remove("on")}); var map={home:0,subs:1,settings:2}; if(btn) btn.classList.add("on"); else if(map[t]!=null) document.querySelectorAll("nav button")[map[t]].classList.add("on"); if(t==="nodes")renderNodes(); if(t==="subs"){renderSubs();renderPlanCards();} if(t==="rules")renderRules(); if(t==="conns")startConnPolling(); if(t==="home"||t==="settings")renderHome(); }
+function onBackPressed(){ showTab("home"); }
+function toggleAdvanced(){ var b=$("advBody"); if(!b) return; var open=b.style.display!=="none"; b.style.display=open?"none":"block"; var c=$("advChev"); if(c) c.classList.toggle("open",!open); }
+function openSheet(html){ $("sheet").innerHTML=html; $("modal").classList.add("open"); }
+function closeSheet(){ $("modal").classList.remove("open"); }
+$("modal").addEventListener("click",function(e){ if(e.target===$("modal")) closeSheet(); });
+function restartCoreIfConnected(){
+  if(!state.connected||!hasBridge()) return;
+  try{ AndroidBridge.stopCore(); var rr=startCoreSafe(); if(!rr.ok||rr.ready===false){ state.connected=false; state.coreRunning=false; renderHome(); renderNodes(); showCoreStartFailSheet(rr.error||"重启核心失败", rr.logTail||""); return; } if(state.settings.tun) AndroidBridge.connectVpn(); }catch(e){}
+}
+
+/* ---------- 订阅解析 ---------- */
+function parseUserinfo(h){ var o={}; if(!h) return o; h.split(/[;,]/).forEach(function(p){ var kv=p.trim().split("="); if(kv.length===2) o[kv[0].trim()]=parseInt(kv[1],10); }); return o; }
+function parseQuery(q){ var o={}; (q||"").split("&").forEach(function(p){ var i=p.indexOf("="); if(i>0) o[decodeURIComponent(p.slice(0,i))]=decodeURIComponent(p.slice(i+1)); }); return o; }
+function parseLink(line){
+  line=(line||"").trim(); if(!line) return null;
+  try{
+    if(line.indexOf("vmess://")===0){ var j=JSON.parse(b64d(line.slice(8))); if(!j.add) return null; return {name:j.ps||j.add, type:"vmess", server:j.add, port:parseInt(j.port,10), uuid:j.id, alterId:parseInt(j.aid||0,10), cipher:j.scy||"auto", tls:j.tls==="tls", servername:j.sni||j.host||"", network:j.net||"tcp", wsPath:(j.path||""), wsHeaders:j.host?{Host:j.host}:{}, grpcService:(j.net==="grpc"?j.path:""), udp:true}; }
+    if(line.indexOf("vless://")===0){ var u=new URL(line); var q=parseQuery(u.search.slice(1)); return {name:decodeURIComponent(u.hash.slice(1))||u.hostname, type:"vless", server:u.hostname, port:parseInt(u.port||"443",10), uuid:decodeURIComponent(u.username), flow:q.flow||"", tls:q.security==="tls"||q.security==="reality", reality:q.security==="reality", servername:q.sni||"", realityPb:q.pb||"", realitySid:q.sid||"", network:q.type||"tcp", wsPath:q.path||"", wsHeaders:q.host?{Host:q.host}:{}, grpcService:q.serviceName||"", alpn:q.alpn?decodeURIComponent(q.alpn).split(","):[], udp:true}; }
+    if(line.indexOf("trojan://")===0){ var u2=new URL(line); var q2=parseQuery(u2.search.slice(1)); return {name:decodeURIComponent(u2.hash.slice(1))||u2.hostname, type:"trojan", server:u2.hostname, port:parseInt(u2.port||"443",10), password:decodeURIComponent(u2.username), sni:q2.sni||u2.hostname, alpn:q2.alpn?decodeURIComponent(q2.alpn).split(","):[], udp:true}; }
+    if(line.indexOf("ss://")===0){ var rest=line.slice(5); var hash=""; var hi=rest.indexOf("#"); if(hi>=0){ hash=decodeURIComponent(rest.slice(hi+1)); rest=rest.slice(0,hi); }
+      var plugin="", pluginOpts=""; var pi=rest.indexOf("/?plugin="); if(pi>=0){ var pl=decodeURIComponent(rest.slice(pi+9)); var semi=pl.indexOf(";"); if(semi>=0){plugin=pl.slice(0,semi); pluginOpts=pl.slice(semi+1);} else plugin=pl; rest=rest.slice(0,pi); }
+      var decoded=b64d(rest); var m=decoded.match(/^([^:]+):([^@]+)@([^:]+):(\d+)$/);
+      if(m) return {name:hash||(m[3]+":"+m[4]), type:"ss", server:m[3], port:parseInt(m[4],10), cipher:m[1], password:m[2], plugin:plugin, pluginOpts:pluginOpts, udp:true};
+      var at=rest.lastIndexOf("@"); if(at>0){ var up=b64d(rest.slice(0,at)).split(":"); var hp=rest.slice(at+1).split(":"); if(up.length>=2&&hp.length===2) return {name:hash||hp[0], type:"ss", server:hp[0], port:parseInt(hp[1],10), cipher:up[0], password:up.slice(1).join(":"), plugin:plugin, pluginOpts:pluginOpts, udp:true}; }
+      return null; }
+    if(line.indexOf("anystls://")===0){ var u5=new URL(line); var q5=parseQuery(u5.search.slice(1)); return {name:decodeURIComponent(u5.hash.slice(1))||u5.hostname, type:"anytls", server:u5.hostname, port:parseInt(u5.port||"443",10), password:decodeURIComponent(u5.username||""), sni:q5.sni||u5.hostname, alpn:q5.alpn?decodeURIComponent(q5.alpn).split(",").map(function(x){return x.trim();}).filter(Boolean):[], udp:true}; }
+    if(line.indexOf("hysteria://")===0){ var u6=new URL(line); var q6=parseQuery(u6.search.slice(1)); var auth6=q6.auth||q6["auth-str"]||q6["auth_str"]||decodeURIComponent(u6.username||""); if(u6.password) auth6=auth6?auth6:decodeURIComponent(u6.username)+":"+decodeURIComponent(u6.password); return {name:decodeURIComponent(u6.hash.slice(1))||u6.hostname, type:"hysteria", server:u6.hostname, port:parseInt(u6.port||"443",10), auth_str:auth6, sni:q6.sni||u6.hostname, alpn:q6.alpn?decodeURIComponent(q6.alpn).split(",").map(function(x){return x.trim();}).filter(Boolean):[], protocol:q6.protocol||"udp", obfs:q6.obfs||"", up:q6.up||"", down:q6.down||"", udp:true}; }
+    if(line.indexOf("ssr://")===0){ return {name:"(SSR 不支持) "+line.slice(0,30), type:"unsupported", server:"", port:0, _note:"SSR 协议 sing-box 不支持，已跳过"}; }
+    if(line.indexOf("hysteria2://")===0||line.indexOf("hy2://")===0){ var u3=new URL(line.replace("hy2://","hysteria2://")); var q3=parseQuery(u3.search.slice(1)); return {name:decodeURIComponent(u3.hash.slice(1))||u3.hostname, type:"hysteria2", server:u3.hostname, port:parseInt(u3.port||"443",10), password:decodeURIComponent(u3.username), sni:q3.sni||u3.hostname, alpn:q3.alpn?[decodeURIComponent(q3.alpn)]:[], obfs:q3.obfs||"", obfsPassword:q3["obfs-password"]||"", udp:true}; }
+    if(line.indexOf("tuic://")===0){ var u4=new URL(line); var q4=parseQuery(u4.search.slice(1)); var up4=decodeURIComponent(u4.username).split(":"); return {name:decodeURIComponent(u4.hash.slice(1))||u4.hostname, type:"tuic", server:u4.hostname, port:parseInt(u4.port||"443",10), uuid:up4[0]||"", password:up4[1]||decodeURIComponent(u4.password||""), sni:q4.sni||u4.hostname, alpn:q4.alpn?[decodeURIComponent(q4.alpn)]:[], congestion:q4.congestion_control||"bbr", udp:true}; }
+  }catch(e){ return null; }
+  return null;
+}
+function parseBase64Sub(text){
+  var t=String(text||"").replace(/\s+/g,""); if(!t) return {nodes:[], diag:null};
+  var dec=b64d(t); if(!dec||dec===t) return {nodes:[], diag:null};
+  return parseSubscriptionDetailed(dec);
+}
+function parseClash(text){
+  var lines=text.split(/\r?\n/), nodes=[], cur=null, inProxies=false, subKey=null;
+  function scalar(v){ v=(v||"").trim(); if((v[0]==='"'&&v.slice(-1)==='"')||(v[0]==="'"&&v.slice(-1)==="'")) v=v.slice(1,-1); return v; }
+  function setClashField(node,k,v){
+    if(k==="port") node.port=parseInt(v,10);
+    else if(k==="alterId"||k==="alter-id") node.alterId=parseInt(v,10);
+    else if(k==="tls") node.tls=(v==="true");
+    else if(k==="udp") node.udp=(v==="true");
+    else if(k==="alpn"){ node.alpn=v.replace(/[\[\]]/g,"").split(",").map(function(x){return x.trim();}).filter(Boolean); }
+    else if(k==="reality"||k==="reality-opts"||k==="ws-opts"||k==="grpc-opts"){ }
+    else node[k]=v;
+    if(k==="servername") node.servername=v; if(k==="sni") node.sni=v;
+  }
+  function splitFlow(inner){
+    var parts=[], depth=0, quote="", buf="";
+    for(var i=0;i<inner.length;i++){ var c=inner[i];
+      if(quote){ buf+=c; if(c===quote) quote=""; continue; }
+      if(c==='"'||c==="'"){ quote=c; buf+=c; continue; }
+      if(c==="{"||c==="[") depth++;
+      if(c==="}"||c==="]") depth--;
+      if(c===","&&depth===0){ parts.push(buf); buf=""; continue; }
+      buf+=c;
+    }
+    if(buf.trim()) parts.push(buf);
+    return parts;
+  }
+  lines.forEach(function(raw){
+    if(/^proxies\s*:/.test(raw)) { inProxies=true; return; }
+    if(inProxies && /^[^ \t-]/.test(raw) && !/^\s/.test(raw)) { inProxies=false; }
+    if(!inProxies) return;
+    var fm=raw.match(/^\s*-\s*\{(.*)\}\s*$/);
+    if(fm){
+      var node={}; var pkR=fm[1].match(/public-key\s*:\s*"?([^",}]+)"?/); var sidR=fm[1].match(/short-id\s*:\s*"?([^",}]+)"?/);
+      splitFlow(fm[1]).forEach(function(pair){
+        var ci=pair.indexOf(":"); if(ci<0) return;
+        var k=pair.slice(0,ci).trim().replace(/^["']|["']$/g,""), v=scalar(pair.slice(ci+1));
+        if(k==="port") node.port=parseInt(v,10);
+        else if(k==="alterId"||k==="alter-id") node.alterId=parseInt(v,10);
+        else if(k==="tls") node.tls=(v==="true");
+        else if(k==="udp") node.udp=(v==="true");
+        else if(k==="alpn"){ node.alpn=v.replace(/[\[\]]/g,"").split(",").map(function(x){return x.trim();}).filter(Boolean); }
+        else if(k==="reality"||k==="reality-opts"||k==="ws-opts"||k==="grpc-opts"){ }
+        else node[k]=v;
+        if(k==="servername") node.servername=v; if(k==="sni") node.sni=v;
+      });
+      if(pkR) node.realityPb=pkR[1]; if(sidR) node.realitySid=sidR[1];
+      if(node.name){ cur=node; nodes.push(node); }
+      return;
+    }
+    var m=raw.match(/^(\s*)- (name|type|server|port|uuid|password|cipher|alterId|tls|servername|sni|network|udp|flow|alpn|obfs|obfs-password|congestion-control)\s*:\s*(.*)$/);
+    if(m){ cur={}; setClashField(cur, m[2], scalar(m[3])); if(m[2]==="name") nodes.push(cur); return; }
+    if(cur){ var m3=raw.match(/^\s+([a-zA-Z0-9\-]+)\s*:\s*(.*)$/); if(m3){ var k=m3[1], v=scalar(m3[2]);
+      setClashField(cur, k, v);
+      if(k==="name"&&nodes.indexOf(cur)<0) nodes.push(cur);
+    } }
+    var m4=raw.match(/^\s+ws-opts\s*:/); if(m4) subKey="ws";
+    var m5=raw.match(/^\s+path\s*:\s*(.+)$/); if(m5&&subKey==="ws"&&cur) cur.wsPath=scalar(m5[1]);
+    var m6=raw.match(/^\s+reality-opts\s*:/); if(m6) subKey="reality";
+    var m7=raw.match(/^\s+public-key\s*:\s*(.+)$/); if(m7&&cur) cur.realityPb=scalar(m7[1]);
+    var m8=raw.match(/^\s+short-id\s*:\s*(.+)$/); if(m8&&cur) cur.realitySid=scalar(m8[1]);
+  });
+  return nodes.filter(function(n){return n&&n.server&&n.port;});
+}
+function parseJsonNodes(text){
+  var data; try{ data=JSON.parse(text); }catch(e){ return null; }
+  var arr=null;
+  if(Array.isArray(data)) arr=data;
+  else if(data&&typeof data==="object"){
+    var keys=["proxies","servers","nodes","proxy_nodes","list","items","outbounds"];
+    for(var i=0;i<keys.length;i++){ if(Array.isArray(data[keys[i]])){ arr=data[keys[i]]; break; } }
+    if(!arr) return [];
+  }
+  if(!arr) return [];
+  var out=[];
+  arr.forEach(function(it){
+    if(typeof it==="string"){ var n1=parseLink(it); if(n1&&n1.type!=="unsupported") out.push(n1); return; }
+    if(!it||typeof it!=="object") return;
+    var n={ name:it.name||it.ps||it.remark||it.tag||"", type:it.type||"", server:it.server||it.add||it.host||"", port:parseInt(it.port||"443",10),
+      uuid:it.uuid||it.id||"", password:it.password||it.pass||"", cipher:it.cipher||it.method||it.scy||"",
+      alterId:it.alterId!=null?parseInt(it.alterId,10):undefined, tls:it.tls===true||it.tls==="tls", servername:it.servername||it.sni||it.host||"",
+      sni:it.sni||"", network:it.network||it.net||"", flow:it.flow||"", wsPath:it.wsPath||it.path||"",
+      reality:it.reality===true, realityPb:it.realityPb||"", realitySid:it.realitySid||"",
+      alpn:Array.isArray(it.alpn)?it.alpn:(typeof it.alpn==="string"?it.alpn.split(",").map(function(x){return x.trim();}).filter(Boolean):[]),
+      auth_str:it.auth_str||it.auth||"", protocol:it.protocol||"", obfs:it.obfs||"", obfsPassword:it["obfs-password"]||it.obfsPassword||"",
+      congestion:it.congestion||it["congestion-control"]||"", grpcService:it.grpcService||it.serviceName||"", udp:true };
+    if(n.type==="vmess"&&it.tls==="tls") n.tls=true;
+    if(n.server&&n.port) out.push(n);
+  });
+  return out;
+}
+function linkSkipReason(line){
+  line=(line||"").trim(); if(!line) return "";
+  if(line.indexOf("ssr://")===0) return "SSR 协议不受支持";
+  var m=line.match(/^([a-z0-9]+):\/\//i);
+  if(!m) return "不是节点链接";
+  var sch=m[1].toLowerCase();
+  if(["vmess","vless","trojan","ss","hysteria","hysteria2","hy2","tuic","anytls"].indexOf(sch)<0) return "不支持的协议："+sch;
+  return sch+" 链接解析失败（格式错误或缺少服务器/端口）";
+}
+function clashEntryCount(text){
+  var lines=String(text||"").split(/\r?\n/), inP=false, n=0;
+  lines.forEach(function(raw){
+    if(/^proxies\s*:/.test(raw)){ inP=true; return; }
+    if(inP&&/^[^ \t-]/.test(raw)&&!/^\s/.test(raw)){ inP=false; }
+    if(inP&&/^\s*-\s/.test(raw)) n++;
+  });
+  return n;
+}
+function jsonRawCount(text){
+  try{ var d=JSON.parse(text); if(Array.isArray(d)) return d.length;
+    if(d&&typeof d==="object"){ var keys=["proxies","servers","nodes","proxy_nodes","list","items","outbounds"];
+      for(var i=0;i<keys.length;i++){ if(Array.isArray(d[keys[i]])) return d[keys[i]].length; } } }catch(e){}
+  return 0;
+}
+function parseSubscriptionDetailed(text){
+  var diag={format:"未知", rawLines:0, ok:0, skipped:0, firstSkip:""};
+  var t0=String(text||"").trim();
+  if(!t0){ diag.format="空内容"; diag.firstSkip="订阅内容为空"; return {nodes:[], diag:diag}; }
+  if(t0[0]==="{"||t0[0]==="["){
+    diag.format="JSON";
+    var jn=parseJsonNodes(t0);
+    if(jn!==null){ diag.rawLines=jsonRawCount(t0); diag.ok=jn.length; diag.skipped=Math.max(0,diag.rawLines-diag.ok);
+      if(diag.skipped>0) diag.firstSkip="个别条目缺少服务器、端口或类型";
+      return {nodes:jn, diag:diag}; }
+  }
+  if(/^\s*</.test(t0)||/<!DOCTYPE/i.test(t0)){ diag.format="网页（HTML）"; diag.firstSkip="返回的是网页，不是订阅内容，请检查订阅链接"; return {nodes:[], diag:diag}; }
+  if(/^\s*proxies\s*:/m.test(text)){
+    diag.format="Clash YAML";
+    var cn=parseClash(text);
+    diag.rawLines=clashEntryCount(text); diag.ok=cn.length; diag.skipped=Math.max(0,diag.rawLines-diag.ok);
+    if(diag.skipped>0) diag.firstSkip="个别条目缺少服务器、端口或名称";
+    return {nodes:cn, diag:diag};
+  }
+  var lines=String(text).trim().split(/\r?\n/).filter(function(l){return l.trim();});
+  var out=[], skips=[];
+  lines.forEach(function(l){
+    var n=parseLink(l);
+    if(n&&n.type!=="unsupported"){ if(n.server&&n.port) out.push(n); else skips.push("缺少服务器或端口"); }
+    else if(n&&n.type==="unsupported") skips.push("SSR 协议不受支持");
+    else skips.push(linkSkipReason(l));
+  });
+  if(!out.length){
+    var dec=parseBase64Sub(text);
+    if(dec.nodes.length&&dec.diag){ diag.format="Base64 "+dec.diag.format; diag.rawLines=dec.diag.rawLines; diag.ok=dec.nodes.length; diag.skipped=dec.diag.skipped; diag.firstSkip=dec.diag.firstSkip; return {nodes:dec.nodes, diag:diag}; }
+  }
+  diag.format="链接清单"; diag.rawLines=lines.length; diag.ok=out.length; diag.skipped=skips.length;
+  if(skips.length) diag.firstSkip=skips[0];
+  return {nodes:out, diag:diag};
+}
+function parseSubscriptionText(text){ return parseSubscriptionDetailed(text).nodes; }
+
+/* ---------- sing-box 配置生成 ---------- */
+var _cfgNodeMap=[]; // 本次 buildConfig 产出的节点出站顺序 -> state.nodes 下标（预检报错 outbounds[N] 映射用）
+var _lastCfg=null;
+function nodeJson(n){
+  var o={type:"", tag:n.name, server:n.server, server_port:n.port||443};
+  function tlsObj(){
+    var t={enabled:true, server_name:n.sni||n.servername||n.server};
+    if(n.alpn&&n.alpn.length) t.alpn=n.alpn.slice();
+    return t;
+  }
+  function transport(){
+    var net=n.network||"tcp";
+    if(net==="ws"){ var t={type:"ws"}; if(n.wsPath) t.path=n.wsPath; if(n.wsHeaders&&n.wsHeaders.Host) t.headers={Host:n.wsHeaders.Host}; return t; }
+    if(net==="grpc"){ var g={type:"grpc"}; if(n.grpcService) g.service_name=n.grpcService; return g; }
+    if(net==="http"){ var h={type:"http"}; if(n.wsPath) h.path=n.wsPath; if(n.wsHeaders&&n.wsHeaders.Host) h.host=[n.wsHeaders.Host]; return h; }
+    if(net==="tcp"||net==="") return null;
+    return undefined; // sing-box 没有该传输（xhttp 等）：整节点跳过
+  }
+  function mbps(v, def){ var m=/^([\d.]+)/.exec(String(v==null?"":v)); return m?parseFloat(m[1]):def; }
+  if(n.type==="vmess"){
+    o.type="vmess"; o.uuid=n.uuid||""; o.security=n.cipher||"auto"; o.alter_id=n.alterId||0;
+    if(n.tls) o.tls=tlsObj();
+    var tr=transport(); if(tr===undefined) return null; if(tr) o.transport=tr;
+  } else if(n.type==="vless"){
+    o.type="vless"; o.uuid=n.uuid||"";
+    if(n.flow) o.flow=n.flow;
+    if(n.reality){
+      o.tls={enabled:true, server_name:n.servername||n.sni||n.server, reality:{enabled:true, public_key:n.realityPb||"", short_id:n.realitySid||""}, utls:{enabled:true, fingerprint:"chrome"}};
+      if(n.alpn&&n.alpn.length) o.tls.alpn=n.alpn.slice();
+    } else if(n.tls){
+      var vt=tlsObj(); if(n.flow==="xtls-rprx-vision") vt.utls={enabled:true, fingerprint:"chrome"};
+      o.tls=vt;
+    }
+    var tr2=transport(); if(tr2===undefined) return null; if(tr2) o.transport=tr2;
+  } else if(n.type==="trojan"){
+    o.type="trojan"; o.password=n.password||""; o.tls=tlsObj();
+  } else if(n.type==="ss"){
+    o.type="shadowsocks"; o.method=n.cipher||"aes-256-gcm"; o.password=n.password||"";
+    if(/^2022-/.test(o.method)) o.udp_over_tcp={};
+    // sing-box 只内置 obfs-local / v2ray-plugin，且 plugin_opts 本来就是字符串
+    if(n.plugin==="obfs-local"||n.plugin==="v2ray-plugin"){ o.plugin=n.plugin; if(n.pluginOpts) o.plugin_opts=String(n.pluginOpts); }
+  } else if(n.type==="hysteria2"){
+    o.type="hysteria2"; o.password=n.password||""; o.tls=tlsObj();
+    if(n.obfs){ var ob={type:n.obfs}; if(n.obfsPassword) ob.password=n.obfsPassword; o.obfs=ob; }
+  } else if(n.type==="anytls"){
+    o.type="anytls"; o.password=n.password||""; o.tls=tlsObj();
+  } else if(n.type==="hysteria"){
+    o.type="hysteria"; o.auth_str=n.auth_str||n.password||"";
+    o.up_mbps=mbps(n.up,10); o.down_mbps=mbps(n.down,100);
+    if(n.obfs) o.obfs=n.obfs;
+    o.tls=tlsObj();
+  } else if(n.type==="tuic"){
+    o.type="tuic"; o.uuid=n.uuid||""; o.password=n.password||"";
+    if(n.congestion&&["cubic","new_reno","bbr"].indexOf(n.congestion)>=0) o.congestion_control=n.congestion;
+    o.tls=tlsObj();
+  } else return null;
+  return o;
+}
+/* sing-box check 不校验出站引用悬空：这里自查所有 outbounds/final/rule 引用的 tag 是否存在，返回缺失的 tag 列表 */
+function checkOutboundRefs(cfg){
+  var tags={}, missing=[];
+  (cfg.outbounds||[]).forEach(function(o){ tags[o.tag]=1; });
+  function need(t){ if(t&&!tags[t]&&missing.indexOf(t)<0) missing.push(t); }
+  (cfg.outbounds||[]).forEach(function(o){ (o.outbounds||[]).forEach(need); });
+  if(cfg.route){ need(cfg.route.final); (cfg.route.rules||[]).forEach(function(r){ need(r.outbound); }); }
+  return missing;
+}
+function buildConfig(){
+  var s=state.settings;
+  var mapped=[], map=[];
+  state.nodes.forEach(function(n,i){ var o=nodeJson(n); if(o){ mapped.push(o); map.push(i); } });
+  _cfgNodeMap=map;
+  var names=mapped.map(function(o){ return o.tag; });
+  var firstNode=names.length?names[0]:"DIRECT";
+  var selName=(state.selected&&names.indexOf(state.selected)>=0)?state.selected:firstNode;
+  var proxyMembers=["DIRECT"].concat(names);
+  var autoMembers=names.length?names.slice():["DIRECT"];
+  // 注意顺序：节点出站在前、组出站在后，outbounds[i]（i < 节点数）即节点 i，供 parseBadProxy 映射
+  var outbounds=[];
+  mapped.forEach(function(o){ outbounds.push(o); });
+  outbounds.push({type:"direct", tag:"DIRECT"});
+  outbounds.push({type:"block", tag:"REJECT"});
+  outbounds.push({type:"selector", tag:"PROXY", outbounds:proxyMembers, default:selName});
+  outbounds.push({type:"urltest", tag:"AUTO", outbounds:autoMembers, url:"https://www.gstatic.com/generate_204", interval:"5m", tolerance:50});
+  outbounds.push({type:"urltest", tag:"FALLBACK", outbounds:autoMembers, url:"https://www.gstatic.com/generate_204", interval:"5m", tolerance:50});
+  outbounds.push({type:"selector", tag:"GLOBAL", outbounds:proxyMembers, default:selName});
+  var rules=[];
+  if(s.sniffer) rules.push({action:"sniff"});
+  // clash_mode 两条规则是 PATCH /configs mode 生效的前提（无则 mode-list 只有 Rule）
+  rules.push({clash_mode:"global", action:"route", outbound:"GLOBAL"});
+  rules.push({clash_mode:"direct", action:"route", outbound:"DIRECT"});
+  // 按 App 分流：route 层补充（真正执行仍靠 VPN 层的 addAllowed/DisallowedApplication，
+  // 流量经 hev SOCKS5 从回环进 mixed 入站，核心看不到来源 App 的包名）
+  if(s.appMode==="allow"&&(s.appList||[]).length) rules.push({package_name:s.appList.slice(), action:"route", outbound:"PROXY"});
+  else if(s.appMode==="deny"&&(s.appList||[]).length) rules.push({package_name:s.appList.slice(), action:"route", outbound:"DIRECT"});
+  rules.push(s.dns?{protocol:"dns", action:"hijack-dns"}:{protocol:"dns", action:"route", outbound:"DIRECT"});
+  var finalOut="PROXY", hasGeoipCN=false;
+  state.rules.forEach(function(r){
+    if(r.type==="MATCH"){ finalOut=state.mode==="direct"?"DIRECT":state.mode==="global"?"PROXY":(s.autoSelect?"AUTO":"PROXY"); return; }
+    if(r.type==="GEOIP"){
+      // GEOIP CN 走本地 rule_set（geoip-cn.srs 打包在 assets、启动时解到 home）；其他国家无本地规则集，直接跳过
+      if(String(r.value).toUpperCase()==="CN"){ hasGeoipCN=true; rules.push({rule_set:"geoip-cn", action:"route", outbound:r.target}); }
+      return;
+    }
+    var val=String(r.value||"").replace(/^\./,""); // sing-box 里 domain_suffix 不带前导 "." 才匹配自身及子域
+    if(r.type==="DOMAIN-SUFFIX") rules.push({domain_suffix:[val], action:"route", outbound:r.target});
+    else if(r.type==="DOMAIN") rules.push({domain:[val], action:"route", outbound:r.target});
+    else if(r.type==="DOMAIN-KEYWORD") rules.push({domain_keyword:[val], action:"route", outbound:r.target});
+    else if(r.type==="IP-CIDR") rules.push({ip_cidr:[val], action:"route", outbound:r.target});
+  });
+  var route={rules:rules, final:finalOut, auto_detect_interface:true, default_domain_resolver:"dns-direct"};
+  if(hasGeoipCN) route.rule_set=[{tag:"geoip-cn", type:"local", format:"binary", path:"geoip-cn.srs"}];
+  var cfg={
+    log:{level:s.log||"info", timestamp:true},
+    dns:{servers:[{tag:"dns-remote", type:"https", server:"1.1.1.1", detour:"PROXY"}, {tag:"dns-direct", type:"udp", server:"223.5.5.5"}], rules:[{domain_suffix:[".cn"], server:"dns-direct"}], final:"dns-remote", strategy:"prefer_ipv4"},
+    inbounds:[{type:"mixed", tag:"mixed-in", listen:s.allowLan?"0.0.0.0":"127.0.0.1", listen_port:s.mixed}],
+    outbounds:outbounds,
+    route:route,
+    experimental:{clash_api:{external_controller:"127.0.0.1:"+s.ext, secret:"", default_mode:state.mode}, cache_file:{enabled:true, path:"cache.db"}}
+  };
+  _lastCfg=cfg;
+  return JSON.stringify(cfg, null, 2);
+}
+
+/* ---------- 渲染 ---------- */
+function renderPlanCards(){
+  var s=state.subs[0]||null, name="未添加订阅", expire="—", remain="—", pct=0;
+  if(s){
+    var u=parseUserinfo(s.userinfo||"");
+    name=(s.name&&s.name.indexOf("http")!==0)?s.name:"订阅套餐";
+    if(u.expire) expire=new Date(u.expire*1000).getFullYear()+"年"+String(new Date(u.expire*1000).getMonth()+1).padStart(2,"0")+"月"+String(new Date(u.expire*1000).getDate()).padStart(2,"0")+"日";
+    if(u.total){ remain=fmtGB(u.total-(u.download||0))+" GB / "+fmtGB(u.total)+" GB"; pct=Math.min(100,Math.max(0,Math.round((u.download||0)/u.total*100))); }
+  }
+  var sl=$("subLineText"); if(sl){ if(s&&u.total){ sl.textContent="订阅 · 剩余 "+(100-pct)+"% · "+expire; } else if(s){ sl.textContent="订阅 · "+expire; } else sl.textContent="未添加订阅"; }
+  [["subPlanName","subExpire","subRemain","subProgress"],["planName","planExpire","planRemain","planProgress"]].forEach(function(ids){
+    var a=$(ids[0]), b=$(ids[1]), c=$(ids[2]), d=$(ids[3]);
+    if(a) a.textContent=name; if(b) b.textContent=expire;
+    if(c) c.innerHTML=remain==="—"?"—":remain.replace(" / "," <span>/ ")+"</span>";
+    if(d) d.style.width=pct+"%";
+  });
+}
+function renderHome(){
+  var cn=countryOf(state.settings.autoSelect&&state.autoNow?state.autoNow:state.selected); var m=String(cn).match(/^(\S+)(\s+.*)?$/);
+  if($("curNode")) $("curNode").innerHTML=m?'<span class="flag">'+esc(m[1])+'</span>'+esc(m[2]||""):esc(cn);
+  var mv=$("modeVal"); if(mv) mv.textContent={rule:"规则",global:"全局",direct:"直连"}[state.mode]||"规则";
+  ["rule","global","direct"].forEach(function(m){ var b=$("modeSeg"+m.charAt(0).toUpperCase()+m.slice(1)); if(b) b.classList.toggle("on", state.mode===m); });
+  var pb=$("powerBtn"); if(pb){ pb.classList.toggle("on",state.connected); var pt=pb.querySelector(".power-txt"); if(pt) pt.textContent=state.connected?"已连接":"未连接"; }
+  $("connState").textContent=state.connected?("核心运行中 · "+(state.settings.tun?"TUN 全局代理已开启":"仅本地代理端口 "+state.settings.mixed)):(state.coreRunning?"核心运行中（未连接）":"核心未运行");
+  var nc=$("nodeCount"); if(nc) nc.textContent=state.nodes.length;
+  var sc=$("subCount"); if(sc) sc.textContent=state.subs.length;
+  var tb=$("tunBtn"); if(tb){ tb.textContent=state.settings.tun?"开启":"关闭"; tb.classList.toggle("on",!!state.settings.tun); }
+  if($("setMixed")) $("setMixed").value=state.settings.mixed;
+  if($("setExt")) $("setExt").value=state.settings.ext;
+  if($("setLan")) $("setLan").checked=!!state.settings.allowLan;
+  if($("setTun")) $("setTun").checked=!!state.settings.tun;
+  if($("setDns")) $("setDns").checked=!!state.settings.dns;
+  if($("setLog")) $("setLog").value=state.settings.log||"info";
+  var lv=$("lanVal"); if(lv) lv.textContent=state.settings.allowLan?"开":"关";
+  var sv=$("snifferVal"); if(sv) sv.textContent=state.settings.sniffer?"开":"关";
+  var sav=$("subAutoVal"); if(sav) sav.textContent=state.settings.subAutoUpdate===0?"关闭":state.settings.subAutoUpdate===72?"每 3 天":"每天";
+  var amv=$("appModeVal"); if(amv) amv.textContent={off:"全部走代理",allow:"仅选中 App 走代理",deny:"选中 App 不走代理"}[state.settings.appMode]||"全部走代理";
+  renderPlanCards(); applyTheme(); checkSubAlerts();
+}
+function delayBadge(n){ if(n.delay==null) return '<span class="badge">未测</span>'; if(n.delay<0) return '<span class="badge bad">超时</span>'; var c=n.delay<300?"good":n.delay<800?"mid":"bad"; return '<span class="badge '+c+'">'+n.delay+'ms'+(n.delayTcp?'·TCP':'')+'</span>'; }
+var _nodeManage=false;
+function toggleNodeManage(){ _nodeManage=!_nodeManage; var b=$("nodeManageBtn"); if(b) b.textContent=_nodeManage?"完成":"管理"; var s=$("nodeSortBtn"); if(s) s.style.display=_nodeManage?"":"none"; renderNodes(); }
+function renderNodes(){
+  var q=($("nodeSearch").value||"").toLowerCase();
+  var list=state.nodes.filter(function(n){return !q||(n.name||"").toLowerCase().indexOf(q)>=0||(n.server||"").toLowerCase().indexOf(q)>=0;});
+  if(!state.nodes.length){ $("nodeList").innerHTML='<div class="empty">还没有节点，去订阅页添加。</div>'; return; }
+  $("nodeList").innerHTML=list.map(function(n,i){
+    var idx=state.nodes.indexOf(n);
+    return '<div class="node '+(state.selected===n.name?"sel":"")+'" onclick="selectNode('+idx+')">'+(state.selected===n.name?'<span class="check">✓</span>':"")+'<span class="flag">'+esc(countryOf(n.name).split(' ')[0])+'</span><div class="nm"><b>'+esc(n.name)+'</b></div>'+delayBadge(n)+(_nodeManage?'<button class="btn danger small" onclick="event.stopPropagation();delNode('+idx+')">删除</button>':"")+'</div>';
+  }).join("");
+}
+/* 订阅链接脱敏：只显示域名 + 路径首段，查询值一律换成 8 个 •，不暴露任何真实字符 */
+function maskSubUrl(u){
+  var raw=String(u||"");
+  try{
+    var d=new URL(raw);
+    var seg=""; var parts=(d.pathname||"").split("/").filter(function(x){ return x; });
+    if(parts.length) seg="/"+parts[0];
+    var q="";
+    if(d.search){ var k=d.search.slice(1).split("&")[0].split("=")[0]; if(k) q="?"+k+"=••••••••"; }
+    return d.hostname+seg+q;
+  }catch(e){
+    var s=raw.replace(/^[a-z][a-z0-9+.-]*:\/\//i,"");
+    var qi=s.indexOf("?"); var base=qi>=0?s.slice(0,qi):s; var qs=qi>=0?s.slice(qi+1):"";
+    var bp=base.split("/"); var out=bp[0]+(bp[1]?"/"+bp[1]:"");
+    if(qs){ var kk=qs.split("&")[0].split("=")[0]; if(kk) out+="?"+kk+"=••••••••"; }
+    return out;
+  }
+}
+/* 订阅显示名：有名字用名字，没有名字（或名字本身就是链接）用域名 */
+function subDisplayName(s){
+  var n=String(s.name||"").trim();
+  if(n&&n.indexOf("http")!==0) return n;
+  try{ return new URL(s.url).hostname; }catch(e){ return maskSubUrl(s.url); }
+}
+function subDiagHtml(s){
+  var d=s.parseDiag; if(!d) return "";
+  var low=(d.ok===0)||(d.rawLines>0&&d.ok<d.rawLines*0.5);
+  if(!low) return "";
+  var txt="解析诊断：格式 "+d.format+" · 原始 "+d.rawLines+" 行/条 · 成功 "+d.ok+" 个 · 跳过 "+d.skipped+" 个";
+  if(d.firstSkip) txt+=" · 首个跳过原因："+d.firstSkip;
+  if(s.added!=null&&s.total!=null&&s.added<s.total) txt+=" · 本次新导入 "+s.added+" 个，其余与已有节点重复";
+  return '<p class="small" style="color:#B3261E">'+esc(txt)+'</p>';
+}
+function renderSubs(){
+  renderPlanCards();
+  if(!state.subs.length){ $("subList").innerHTML='<div class="empty">还没有订阅，在上方添加。</div>'; return; }
+  $("subList").innerHTML=state.subs.map(function(s,i){
+    var u=parseUserinfo(s.userinfo||""); var extra="";
+    if(u.total) extra+="流量 "+fmtB(u.download||0)+" / "+fmtB(u.total);
+    if(u.expire) extra+=(extra?" · ":"")+"到期 "+new Date(u.expire*1000).toLocaleDateString();
+    var total=(s.total!=null?s.total:(s.count||0));
+    return '<div class="card sub-item" style="margin-bottom:10px"><div class="row"><b class="sub-name">'+esc(subDisplayName(s))+'</b><span class="tag">'+total+' 个节点</span></div><p class="sub-url">'+esc(maskSubUrl(s.url))+'</p><p class="small">'+esc(extra||"无流量/到期信息")+'</p><p class="small">上次更新：'+esc(s.updated||"—")+'</p>'+subDiagHtml(s)+'<div class="row" style="margin-top:8px"><button class="btn small" onclick="updateSub('+i+')">更新订阅</button><button class="btn danger small" onclick="delSub('+i+')">删除</button></div></div>';
+  }).join("");
+}
+function renderRules(){
+  $("ruleList").innerHTML=state.rules.map(function(r,i){
+    return '<div class="row" style="padding:10px 0;border-bottom:1px solid #2c2c2e"><span><span class="tag">'+esc(r.type)+'</span> '+esc(r.value||"(全部)")+' → <b>'+esc(r.target)+'</b></span><button class="btn danger small" onclick="delRule('+i+')">删除</button></div>';
+  }).join("");
+}
+
+/* ---------- 连接 ---------- */
+function drawChart(){ var c=$("chart"); if(!c) return; var ctx=c.getContext("2d"); if(!ctx) return; ctx.clearRect(0,0,c.width,c.height); var h=state.history.slice(-60); if(h.length<2) return; var max=Math.max.apply(null,h.map(function(v){return v.down;}))||1; ctx.strokeStyle="#1E9E4A"; ctx.lineWidth=3; ctx.beginPath(); h.forEach(function(v,i){ var x=i/(h.length-1)*c.width, y=c.height-8-(v.down/max)*(c.height-16); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }); ctx.stroke(); }
+var pollTimer=null, uptimeTimer=null;
+function startPolling(){
+  if(pollTimer) return;
+  pollTimer=setInterval(function(){
+    if(!hasBridge()) return;
+    try{
+      var r=JSON.parse(AndroidBridge.trafficOnce());
+      if(r.ok&&r.body){ var t=JSON.parse(r.body); state.traffic.up=t.up||0; state.traffic.down=t.down||0;
+        if($("upRate")) $("upRate").textContent=fmtRate(t.up||0);
+        if($("downRate")) $("downRate").textContent=fmtRate(t.down||0);
+        if($("upTotal")) $("upTotal").textContent=fmtB(t.upTotal||0);
+        if($("downTotal")) $("downTotal").textContent=fmtB(t.downTotal||0);
+        if($("statDown")) $("statDown").textContent=fmtB(t.downTotal||0);
+        if($("statUp")) $("statUp").textContent=fmtB(t.upTotal||0);
+        state.history.push({down:t.down||0}); if(state.history.length>120) state.history.shift(); drawChart(); }
+    }catch(e){}
+    try{ var s=JSON.parse(AndroidBridge.coreStatus()); state.uptimeSec=s.uptimeSec||state.uptimeSec; if($("uptime")) $("uptime").textContent="运行时长 "+new Date(state.uptimeSec*1000).toISOString().substr(11,8); }catch(e){}
+    try{ if(state.settings.autoSelect&&state.connected&&state.nodes.length){ var ra=JSON.parse(AndroidBridge.apiGet("/proxies/AUTO")); if(ra.ok&&ra.body){ var ga=JSON.parse(ra.body); if(ga.now&&ga.now!==state.autoNow){ state.autoNow=ga.now; renderHome(); } } } }catch(e){}
+  },2000);
+  uptimeTimer=setInterval(function(){ state.uptimeSec++; if($("uptime")) $("uptime").textContent="运行时长 "+new Date(state.uptimeSec*1000).toISOString().substr(11,8); },1000);
+}
+function showCoreStartFailSheet(err, logTail){
+  var e=err||"未知错误";
+  var lt=String(logTail||"").trim();
+  openSheet('<h3>核心启动失败</h3>'
+    +'<p class="small" style="line-height:1.7;margin-bottom:10px">'+esc(e)+'</p>'
+    +'<p class="small" style="margin-bottom:6px">核心日志（最后 15 行）：</p>'
+    +'<pre class="log" style="max-height:40vh">'+esc(lt||"（无日志内容，可能是核心进程未写入日志）")+'</pre>'
+    +'<p class="small" style="margin-top:10px;line-height:1.7">也可以在 设置 → 连接记录 里查看完整日志。</p>'
+    +'<div class="row" style="margin-top:12px"><button class="btn ghost" onclick="closeSheet()">关闭</button></div>');
+}
+function parseBadProxy(err){
+  var m=/outbounds?\[(\d+)\]/.exec(err||"");
+  if(m){ var idx=parseInt(m[1],10); if(_cfgNodeMap&&_cfgNodeMap[idx]!=null) return _cfgNodeMap[idx]; return -1; }
+  var m2=/proxy (\d+):/.exec(err||""); if(m2) return parseInt(m2[1],10);
+  var m3=/proxy (\S+) is the duplicate name/.exec(err||""); if(m3){ var nm=m3[1]; for(var i=0;i<state.nodes.length;i++) if(state.nodes[i].name===nm) return i; }
+  return -1;
+}
+function startCoreSafe(){
+  var removed=[];
+  for(var attempt=0; attempt<6; attempt++){
+    var cfg=buildConfig();
+    // sing-box check 不校验出站引用悬空：先 JS 自查，引用缺失直接报错不调 check
+    var miss=checkOutboundRefs(_lastCfg||{});
+    if(miss.length) return {ok:false, error:"配置出站引用缺失："+miss.join("、"), logTail:""};
+    if(hasBridge()&&AndroidBridge.validateConfig){
+      var v; try{ v=JSON.parse(AndroidBridge.validateConfig(cfg)); }catch(e){ return {ok:false, error:"配置预检失败："+e, logTail:""}; }
+      if(!v.ok){
+        var bad=parseBadProxy(v.error||"");
+        if(bad>=0&&bad<state.nodes.length){
+          removed.push(state.nodes[bad].name); state.nodes.splice(bad,1); save();
+          if(state.selected&&!state.nodes.some(function(x){return x.name===state.selected;})) state.selected="DIRECT";
+          continue;
+        }
+        return {ok:false, error:v.error||"配置预检未通过", logTail:v.logTail||""};
+      }
+    }
+    var r; try{ r=JSON.parse(AndroidBridge.startCore(cfg)); }catch(e){ return {ok:false, error:"启动失败："+e, logTail:""}; }
+    if(removed.length&&r.ok) toast("已自动剔除 "+removed.length+" 个坏节点："+removed.join("、"));
+    return r;
+  }
+  return {ok:false, error:"连续剔除坏节点后仍无法启动", logTail:""};
+}
+async function toggleConnect(){
+  if(state.connected){ disconnectAll(); return; }
+  if(!hasBridge()){ toast("需在安卓 App 内运行才能启动核心"); return; }
+  toast("正在启动 sing-box 核心…");
+  try{
+    var r=startCoreSafe();
+    if(!r.ok||r.ready===false){ showCoreStartFailSheet(r.error||"未知错误", r.logTail||""); return; }
+    state.coreRunning=true;
+    if(state.settings.tun){ AndroidBridge.connectVpn(); }
+    state.connected=true; save(); renderHome(); renderNodes(); startPolling();
+    toast("已连接 · "+(state.settings.tun?"TUN 全局代理":"本地代理 127.0.0.1:"+state.settings.mixed));
+  }catch(e){ showCoreStartFailSheet("启动失败："+e, ""); }
+}
+function disconnectAll(){
+  try{ if(hasBridge()){ AndroidBridge.disconnectVpn(); AndroidBridge.stopCore(); } }catch(e){}
+  state.connected=false; state.coreRunning=false; if(pollTimer){clearInterval(pollTimer);pollTimer=null;} if(uptimeTimer){clearInterval(uptimeTimer);uptimeTimer=null;}
+  save(); renderHome(); renderNodes(); toast("已断开");
+}
+window.__vpnGranted=function(ok){ if(!ok){ toast("未授权 VPN，核心仍在运行，仅本地端口可用"); renderHome(); } };
+function setMode(m){
+  state.mode=m; save(); renderHome();
+  if(state.connected&&hasBridge()){
+    var verified=false;
+    try{
+      var r=JSON.parse(AndroidBridge.apiPatch("/configs", JSON.stringify({mode:m})));
+      // PATCH 无效值也返回 204（静默忽略），必须 GET /configs 核对 mode 是否真的变了
+      if(r.ok||r.code===204){
+        try{ var g=JSON.parse(AndroidBridge.apiGet("/configs")); if(g.ok&&g.body){ var c=JSON.parse(g.body); if(String(c.mode||"").toLowerCase()===m) verified=true; } }catch(e2){}
+      }
+    }catch(e){}
+    if(!verified) restartCoreIfConnected();
+  }
+}
+function toggleTun(){ state.settings.tun=!state.settings.tun; save(); renderHome(); }
+function toggleLan(){ state.settings.allowLan=!state.settings.allowLan; save(); renderHome(); restartCoreIfConnected(); }
+function toggleSniffer(){ state.settings.sniffer=!state.settings.sniffer; save(); renderHome(); restartCoreIfConnected(); }
+function syncAllSubs(){
+  if(!state.subs.length){ toast("还没有订阅"); return; }
+  toast("正在同步全部订阅…");
+  var i=0; (function next(){ if(i>=state.subs.length){ toast("同步完成"); renderSubs(); renderHome(); return; } try{ updateSub(i); }catch(e){} i++; setTimeout(next,400); })();
+}
+function openModeSheet(){
+  var cur=state.mode;
+  function row(m,label){ return '<div class="optrow" onclick="chooseMode(\''+m+'\')"><span>'+label+'</span><span style="color:#1E9E4A">'+(cur===m?"✓":"")+'</span></div>'; }
+  openSheet('<h3>代理模式</h3>'+row("rule","规则")+row("global","全局")+row("direct","直连")+'<div class="optrow" onclick="toggleAutoSelect()"><span>自动选最快节点</span><span style="color:#1E9E4A">'+(state.settings.autoSelect?"✓ 开":"关")+'</span></div>'+'<div class="row" style="margin-top:12px"><button class="btn ghost" onclick="closeSheet()">取消</button></div>');
+}
+function chooseMode(m){ closeSheet(); setMode(m); }
+function toggleAutoSelect(){ state.settings.autoSelect=!state.settings.autoSelect; save(); closeSheet(); renderHome(); if(state.connected) restartCoreIfConnected(); }
+function openPortSheet(){
+  var s=state.settings;
+  openSheet('<h3>隧道端口</h3><label>混淆端口 mixed-port</label><input id="portMixed" type="number" value="'+s.mixed+'"><label>外部控制端口</label><input id="portExt" type="number" value="'+s.ext+'"><label>日志级别</label><select id="portLog"><option'+(s.log==="info"?" selected":"")+'>info</option><option'+(s.log==="debug"?" selected":"")+'>debug</option><option'+(s.log==="warning"?" selected":"")+'>warning</option><option'+(s.log==="error"?" selected":"")+'>error</option></select><label><input type="checkbox" id="portDns" style="width:auto"'+(s.dns?" checked":"")+'> 开启内置 DNS</label><div class="row" style="margin-top:10px"><button class="btn" onclick="savePortSheet()">保存</button><button class="btn ghost" onclick="closeSheet()">取消</button></div>');
+}
+function savePortSheet(){
+  if($("setMixed")) $("setMixed").value=parseInt($("portMixed").value,10)||7890;
+  if($("setExt")) $("setExt").value=parseInt($("portExt").value,10)||9090;
+  if($("setDns")) $("setDns").checked=$("portDns").checked;
+  if($("setLog")) $("setLog").value=$("portLog").value;
+  closeSheet(); saveSettings();
+}
+function aboutText(){
+  var t="应用：星核代理 v3.1（通用版）\n内核：sing-box 1.14.4\n隧道：hev-socks5-tunnel 2.19.3\n包名：com.dabao.proxy\n版本记录：v3.1 与 Windows v1.3 同步修复订阅多节点导入";
+  if(hasBridge()){ try{ var info=JSON.parse(AndroidBridge.getInfo()); var ab=JSON.parse(AndroidBridge.getAbi()); t+="\n设备："+(info.model||"")+" · Android SDK "+(info.sdk||"")+" · ABI "+(ab.abi||""); }catch(e){} }
+  return t;
+}
+function openAboutSheet(){
+  openSheet('<h3>关于</h3><div class="kv"><span>应用</span><b>星核代理 v3.1（通用版）</b></div><div class="kv"><span>内核</span><b>sing-box 1.14.4</b></div><div class="kv"><span>隧道</span><b>hev-socks5-tunnel 2.19.3</b></div><div class="kv"><span>包名</span><b>com.dabao.proxy</b></div><p class="small" id="aboutInfo" style="white-space:pre-wrap;margin-top:10px"></p><div class="row" style="margin-top:12px"><button class="btn ghost" onclick="closeSheet()">关闭</button></div>');
+  var el=$("aboutInfo"); if(el) el.textContent=aboutText();
+}
+
+/* ---------- 节点 ---------- */
+function selectNode(i){
+  var n=state.nodes[i]; if(!n) return; state.selected=n.name; save(); renderNodes(); renderHome();
+  if(state.connected&&hasBridge()){
+    try{ var r=JSON.parse(AndroidBridge.apiPut("/proxies/PROXY", JSON.stringify({name:n.name}))); if(!r.ok) toast("切换节点失败："+(r.error||"请重启连接")); else toast("已切换到 "+n.name); }catch(e){ toast("切换失败："+e); }
+  }
+}
+function delNode(i){ if(!confirm("删除节点 "+state.nodes[i].name+"？")) return; state.nodes.splice(i,1); if(state.selected===state.nodes[i]&&state.nodes[i]){} save(); renderNodes(); renderHome(); }
+function testNode(i){
+  var n=state.nodes[i]; if(!n) return;
+  if(state.connected&&hasBridge()){
+    try{ var r=JSON.parse(AndroidBridge.apiGet("/proxies/"+encodeURIComponent(n.name)+"/delay?timeout=5000&url=https://www.gstatic.com/generate_204")); if(r.ok){ var d=JSON.parse(r.body); n.delay=d.delay; } else n.delay=-1; }catch(e){ n.delay=-1; }
+    n.delayTcp=false; n.delayReal=true;
+  } else if(hasBridge()){
+    try{ var r2=JSON.parse(AndroidBridge.tcpPing(n.server, n.port)); n.delay=r2.ok?r2.ms:-1; }catch(e){ n.delay=-1; }
+    n.delayTcp=true; n.delayReal=false;
+  } else { n.delay=Math.floor(80+Math.random()*400); n.delayTcp=false; n.delayReal=false; }
+  save(); renderNodes();
+}
+function testSelected(){ var i=state.nodes.findIndex(function(n){return n.name===state.selected;}); if(i>=0) testNode(i); else toast("当前是 DIRECT，没有可测的节点"); }
+function testAll(){ var i=0; (function next(){ if(i>=state.nodes.length){ toast("全部测速完成"); return; } testNode(i); i++; setTimeout(next, 350); })(); }
+function testAllReal(){
+  if(!state.nodes.length){ toast("还没有节点"); return; }
+  if(!state.connected||!hasBridge()){ toast("先连接，再测真延迟"); testAll(); return; }
+  var i=0; (function next(){
+    if(i>=state.nodes.length){ toast("真延迟测速完成"); return; }
+    var n=state.nodes[i];
+    try{ var r=JSON.parse(AndroidBridge.apiGet("/proxies/"+encodeURIComponent(n.name)+"/delay?timeout=5000&url=https://www.gstatic.com/generate_204")); if(r.ok){ var d=JSON.parse(r.body); n.delay=d.delay; n.delayTcp=false; n.delayReal=true; } else n.delay=-1; }catch(e){ n.delay=-1; }
+    save(); renderNodes(); i++; setTimeout(next, 350);
+  })();
+}
+function sortByDelay(){ state.nodes.sort(function(a,b){ return (a.delay==null?99999:a.delay<0?99999:a.delay)-(b.delay==null?99999:b.delay<0?99999:b.delay); }); save(); renderNodes(); }
+
+/* ---------- 订阅 ---------- */
+function importNodes(nodes, sub){
+  var exKeys=state.nodes.map(function(x){ return nodeKey(x); });
+  var r=sanitizeNodes(nodes, state.nodes.map(function(x){return x.name;}), exKeys);
+  var added=0; r.nodes.forEach(function(n){ state.nodes.push(n); added++; });
+  if(sub){ sub.count=r.nodes.length; sub.total=nodes.length; sub.added=added; sub.dupSkipped=r.dupSkipped||0; if(r.skipReasons&&r.skipReasons.length) sub.skipReasons=r.skipReasons; }
+  save(); renderNodes(); renderSubs(); renderHome();
+  if(r.skipped>0&&!_quietUpdate) toast("已跳过 "+r.skipped+" 个无效节点");
+  return added;
+}
+function addSubscription(){
+  var url=$("subUrl").value.trim(); if(!url){ toast("先填订阅链接"); return; }
+  if(state.subs.some(function(s){ return String(s.url||"").trim()===url; })){ toast("该订阅已添加"); return; }
+  if(!hasBridge()){ toast("需在安卓 App 内拉取订阅"); return; }
+  toast("正在拉取订阅…");
+  try{
+    var r=JSON.parse(AndroidBridge.fetchSubscription(url, $("subSite").value.trim()));
+    if(!r.ok){ toast("拉取失败："+(r.error||("HTTP "+r.code))); return; }
+    var pd=parseSubscriptionDetailed(r.text||"");
+    var nodes=pd.nodes;
+    if(!nodes.length){ showParseDiagnosis(r.text||""); return; }
+    var sub={url:url, name:$("subName").value.trim()||url, site:$("subSite").value.trim(), userinfo:r.userinfo||"", updated:new Date().toLocaleString(), updatedAt:Date.now(), count:0, total:nodes.length, parseDiag:pd.diag};
+    state.subs.push(sub); var added=importNodes(nodes, sub);
+    toast("已导入 "+added+" 个节点（订阅共 "+nodes.length+" 个）");
+  }catch(e){ toast("拉取失败："+e); }
+}
+function updateSub(i, quiet){
+  var s=state.subs[i]; if(!s||!hasBridge()) return -1;
+  try{ var r=JSON.parse(AndroidBridge.fetchSubscription(s.url, s.site||"")); if(!r.ok){ if(!quiet) toast("更新失败"); return -1; }
+    var pd=parseSubscriptionDetailed(r.text||"");
+    var nodes=pd.nodes;
+    s.userinfo=r.userinfo||s.userinfo; s.updated=new Date().toLocaleString(); s.updatedAt=Date.now();
+    s.total=nodes.length; s.parseDiag=pd.diag;
+    if(!nodes.length){ save(); renderSubs(); renderHome(); if(!quiet) showParseDiagnosis(r.text||""); return -1; }
+    var added=importNodes(nodes, s); if(!quiet) toast("订阅已更新，新导入 "+added+" 个节点"); return added; }catch(e){ if(!quiet) toast("更新失败："+e); return -1; }
+}
+function delSub(i){ if(!confirm("删除该订阅？节点本身不会自动删除。")) return; state.subs.splice(i,1); save(); renderSubs(); renderHome(); }
+function openImport(){
+  openSheet('<h3>粘贴导入节点链接</h3><p class="small">每行一个 vmess://、vless://、trojan://、ss://、hysteria2://、tuic:// 链接；也可以直接粘贴订阅链接（http(s)://…），会自动拉取订阅；SSR 会提示不支持。</p><textarea id="importText" rows="8" placeholder="vmess://...\nvless://...\nhttps://..."></textarea><div class="row"><button class="btn" onclick="doImport()">导入</button><button class="btn ghost" onclick="scanQr()">扫码</button><button class="btn ghost" onclick="closeSheet()">取消</button></div>');
+}
+function showParseDiagnosis(text){
+  var t=String(text||"");
+  var isHtml=/^\s*</.test(t)||/<!DOCTYPE/i.test(t);
+  var head=t.slice(0,120);
+  openSheet('<h3>解析出 0 个节点</h3>'
+    +'<div class="kv"><span>内容长度</span><b>'+t.length+' 个字符</b></div>'
+    +'<div class="kv"><span>开头内容</span><b style="word-break:break-all;text-align:left">'+(head?esc(head):"(空)")+'</b></div>'
+    +'<p class="small" style="margin-top:12px;line-height:1.7">'+(isHtml
+      ?"返回的是网页，不是订阅内容，可能是链接过期或需要登录。请检查订阅链接，或在提供方页面重新复制链接。"
+      :"可能原因：订阅内容为空，或链接格式暂不受支持。把上面开头那几个字告诉我们，就能定位是哪一种。")+'</p>'
+    +'<div class="row" style="margin-top:12px"><button class="btn ghost" onclick="closeSheet()">关闭</button></div>');
+}
+function scanQr(){ if(hasBridge()){ try{ AndroidBridge.scanQr(); }catch(e){ toast("需在安卓 App 内扫码"); } } else toast("需在安卓 App 内扫码"); }
+function handleScanned(text){
+  var t=String(text||"").trim();
+  if(!t){ toast("没有扫到内容"); return; }
+  if(/^https?:\/\//i.test(t)){ closeSheet(); showTab("subs"); $("subUrl").value=t; addSubscription(); return; }
+  if(/^(vmess|vless|trojan|ss|ssr|hysteria2|hy2|tuic|anystls|hysteria):\/\//i.test(t)
+     || /proxies\s*:/.test(t)
+     || (t.length>=40 && /^[A-Za-z0-9+\/=_\-\r\n]+$/.test(t))){
+    openImport(); $("importText").value=t; doImport(); return;
+  }
+  toast("扫到的内容不是订阅或节点链接");
+}
+function fetchSubNodes(url){
+  try{
+    var r=JSON.parse(AndroidBridge.fetchSubscription(url, ""));
+    if(!r.ok) return {ok:false, text:r.text||""};
+    var pd=parseSubscriptionDetailed(r.text||"");
+    var nodes=pd.nodes;
+    if(!nodes.length) return {ok:false, text:r.text||"", diag:pd.diag};
+    return {ok:true, nodes:nodes, userinfo:r.userinfo||"", diag:pd.diag};
+  }catch(e){ return {ok:false, text:""}; }
+}
+function doImport(){
+  var txt=$("importText").value||"";
+  var nodes=parseSubscriptionText(txt);
+  if(nodes.length){ var added=importNodes(nodes, null); closeSheet(); toast("已导入 "+added+" 个节点"); return; }
+  var urls=(txt.match(/https?:\/\/[^\s'"<>]+/g)||[]).map(function(u){ return u.replace(/[.,;)\]]+$/,""); });
+  if(!urls.length){ closeSheet(); showParseDiagnosis(txt); return; }
+  if(!hasBridge()){ toast("需在安卓 App 内拉取订阅"); return; }
+  closeSheet();
+  var totalAdded=0, totalNodes=0, lastText=txt, anyOk=false;
+  urls.forEach(function(u){
+    if(state.subs.some(function(s){ return String(s.url||"").trim()===u; })){ return; }
+    var res=fetchSubNodes(u);
+    if(res.ok){
+      anyOk=true;
+      var name="订阅套餐"; try{ name=new URL(u).hostname||name; }catch(e){}
+      var sub={url:u, name:name, site:"", userinfo:res.userinfo, updated:new Date().toLocaleString(), updatedAt:Date.now(), count:0, total:res.nodes.length, parseDiag:res.diag};
+      state.subs.push(sub);
+      totalAdded+=importNodes(res.nodes, sub); totalNodes+=res.nodes.length;
+    } else if(res.text) lastText=res.text;
+  });
+  if(anyOk) toast("已导入 "+totalAdded+" 个节点（订阅共 "+totalNodes+" 个）");
+  else showParseDiagnosis(lastText);
+}
+function exportConfig(){
+  if(!hasBridge()){ showConfig(); return; }
+  try{ var r=JSON.parse(AndroidBridge.exportConfig(buildConfig(), "xinghe-config.json")); toast(r.ok?("已导出到 "+(r.path||"下载目录")):("导出失败："+(r.error||""))); }catch(e){ toast("导出失败："+e); }
+}
+function showConfig(){
+  openSheet('<h3>生成的 sing-box 配置</h3><pre class="log" style="max-height:50vh">'+esc(buildConfig())+'</pre><div class="row"><button class="btn ghost" onclick="closeSheet()">关闭</button></div>');
+}
+
+/* ---------- 订阅自动更新与提醒 ---------- */
+function checkSubAlerts(){
+  var msgs=[];
+  (state.subs||[]).forEach(function(s){
+    var u=parseUserinfo(s.userinfo||"");
+    var nm=(s.name&&s.name.indexOf("http")!==0)?s.name:"订阅";
+    if(u.total&&u.total>0){
+      var remainPct=Math.round((u.total-(u.download||0))/u.total*100);
+      if(remainPct<10){ msgs.push("「"+nm+"」流量只剩 "+remainPct+"%"); var k1=s.url+"|low"; if(!_subAlertToasted[k1]){ _subAlertToasted[k1]=1; toast("流量提醒：「"+nm+"」只剩 "+remainPct+"%"); } }
+    }
+    if(u.expire){
+      var days=(u.expire*1000-Date.now())/86400000;
+      if(days<3){ var d=new Date(u.expire*1000); var ds=(d.getMonth()+1)+"月"+d.getDate()+"日"; msgs.push("「"+nm+"」将于 "+ds+" 到期"); var k2=s.url+"|exp"; if(!_subAlertToasted[k2]){ _subAlertToasted[k2]=1; toast("订阅将于 "+ds+" 到期"); } }
+    }
+  });
+  var el=$("subAlert"); if(el){ if(msgs.length){ el.textContent=msgs.join("；"); el.classList.add("show"); } else { el.textContent=""; el.classList.remove("show"); } }
+}
+function maybeAutoUpdateSubs(){
+  if(!hasBridge()||!state.subs.length) return;
+  var hours=state.settings.subAutoUpdate; if(!hours) return;
+  var due=[];
+  state.subs.forEach(function(s,i){ var at=s.updatedAt||Date.parse(s.updated||"")||0; if(Date.now()-at>hours*3600*1000) due.push(i); });
+  if(!due.length) return;
+  _quietUpdate=true;
+  var total=0;
+  due.forEach(function(i){ var a=updateSub(i,true); if(a>0) total+=a; });
+  _quietUpdate=false;
+  if(total>0) toast("订阅自动更新完成，新导入 "+total+" 个节点");
+}
+function openSubAutoSheet(){
+  var cur=state.settings.subAutoUpdate;
+  function row(h,label){ return '<div class="optrow" onclick="chooseSubAuto('+h+')"><span>'+label+'</span><span style="color:#1E9E4A">'+(cur===h?"✓":"")+'</span></div>'; }
+  openSheet('<h3>订阅自动更新</h3><p class="small" style="margin-bottom:8px">打开 App 时检查，超过间隔就自动拉取新订阅。</p>'+row(24,"每天")+row(72,"每 3 天")+row(0,"关闭")+'<div class="row" style="margin-top:12px"><button class="btn ghost" onclick="closeSheet()">取消</button></div>');
+}
+function chooseSubAuto(h){ state.settings.subAutoUpdate=h; save(); renderHome(); closeSheet(); }
+
+/* ---------- 按 App 分流 ---------- */
+var _appCache=null;
+function openAppSheet(){
+  if(!hasBridge()){ openSheet('<h3>按 App 分流</h3><p class="small">需在安卓 App 内查看应用列表。</p><div class="row"><button class="btn ghost" onclick="closeSheet()">关闭</button></div>'); return; }
+  if(!_appCache){ try{ var r=JSON.parse(AndroidBridge.getInstalledApps()); _appCache=r.ok?r.apps:[]; }catch(e){ _appCache=[]; } }
+  renderAppSheet("");
+}
+function renderAppSheet(q){
+  var cur=state.settings.appMode||"off";
+  var list=_appCache||[];
+  if(q){ var s=String(q).toLowerCase(); list=list.filter(function(a){ return (a.label||"").toLowerCase().indexOf(s)>=0||(a.package||"").toLowerCase().indexOf(s)>=0; }); }
+  function row(m,label){ return '<div class="optrow" onclick="chooseAppMode(\''+m+'\')"><span>'+label+'</span><span style="color:#1E9E4A">'+(cur===m?"✓":"")+'</span></div>'; }
+  var html='<h3>按 App 分流</h3>'+row("off","全部走代理")+row("allow","仅选中 App 走代理")+row("deny","选中 App 不走代理")
+    +'<input id="appSearch" placeholder="搜索应用" oninput="renderAppSheet(this.value)" style="margin-top:10px">'
+    +'<div style="max-height:34vh;overflow:auto;margin-top:6px">'
+    +list.map(function(a){ var on=(state.settings.appList||[]).indexOf(a.package)>=0; return '<div class="app-row" onclick="toggleAppPkg(\''+String(a.package).replace(/\'/g,"")+'\')"><div class="anm"><b>'+esc(a.label||a.package)+'</b><span>'+esc(a.package)+'</span></div><input type="checkbox" style="width:auto"'+(on?" checked":"")+' onclick="event.stopPropagation()"></div>'; }).join("")
+    +'</div><div class="row" style="margin-top:12px"><button class="btn" onclick="saveAppSheet()">保存</button><button class="btn ghost" onclick="closeSheet()">取消</button></div>';
+  openSheet(html);
+  var si=$("appSearch"); if(si){ si.value=q||""; if(q){ si.focus(); try{ si.setSelectionRange(si.value.length, si.value.length); }catch(e){} } }
+}
+function chooseAppMode(m){ state.settings.appMode=m; save(); renderHome(); renderAppSheet($("appSearch")?$("appSearch").value:""); }
+function toggleAppPkg(pkg){
+  var l=state.settings.appList||[]; var i=l.indexOf(pkg);
+  if(i>=0) l.splice(i,1); else l.push(pkg);
+  state.settings.appList=l; save(); renderAppSheet($("appSearch")?$("appSearch").value:"");
+}
+function saveAppSheet(){
+  if(hasBridge()){ try{ AndroidBridge.saveAppRules(state.settings.appMode||"off", JSON.stringify(state.settings.appList||[])); }catch(e){} }
+  save(); renderHome(); closeSheet(); toast("按 App 分流已保存，重新连接后生效");
+}
+
+/* ---------- 实时连接 ---------- */
+var connTimer=null;
+var lastConnMap={};
+function stopConnPolling(){ if(connTimer){ clearInterval(connTimer); connTimer=null; } }
+function connRow(c, ended){
+  var md=c.metadata||{};
+  var host=c.host||(md.host||((md.destinationIP||"")+(md.destinationPort?":"+md.destinationPort:"")));
+  // sing-box 的 chains 是倒序（[0] 是实际拨号的叶子，最后一个是命中的组）：倒过来展示为 组 → 叶子
+  var chain=c.chain||((c.chains&&c.chains.length)?c.chains.slice().reverse().join(" → "):"");
+  var rule=c.rule||"";
+  var sub=esc(chain)+(rule?" · "+esc(rule):"");
+  if(ended) sub+=(sub?" · ":"")+"已结束 "+esc(c.endedAt||"");
+  return '<div class="conn"><div class="cm"><b>'+esc(host)+'</b><span>'+sub+'</span></div><span class="badge">↓ '+fmtB(c.download||0)+' ↑ '+fmtB(c.upload||0)+'</span></div>';
+}
+function renderRecentConns(){
+  var el=$("recentList"); if(!el) return;
+  if(!state.recentConns.length){ el.innerHTML='<div class="empty">暂无</div>'; return; }
+  el.innerHTML=state.recentConns.map(function(c){ return connRow(c, true); }).join("");
+}
+function renderConns(){
+  var el=$("connList"); if(!el) return;
+  renderRecentConns();
+  if(!state.connected||!hasBridge()){
+    el.innerHTML='<div class="empty">未连接</div>';
+    var dt0=$("connDownTotal"); if(dt0) dt0.textContent="—";
+    var ut0=$("connUpTotal"); if(ut0) ut0.textContent="—";
+    return;
+  }
+  try{
+    var r=JSON.parse(AndroidBridge.apiGet("/connections"));
+    if(!r.ok||!r.body){ el.innerHTML='<div class="empty">读取失败</div>'; return; }
+    var d=JSON.parse(r.body); var list=d.connections||[];
+    var dt=$("connDownTotal"); if(dt) dt.textContent=fmtB(d.downloadTotal||0);
+    var ut=$("connUpTotal"); if(ut) ut.textContent=fmtB(d.uploadTotal||0);
+    var curIds={};
+    list.forEach(function(c){
+      curIds[c.id]=1;
+      var md=c.metadata||{};
+      lastConnMap[c.id]={id:c.id, host:md.host||((md.destinationIP||"")+(md.destinationPort?":"+md.destinationPort:"")), chain:(c.chains&&c.chains.length)?c.chains.slice().reverse().join(" → "):"", rule:c.rule||"", download:c.download||0, upload:c.upload||0};
+    });
+    Object.keys(lastConnMap).forEach(function(id){
+      if(!curIds[id]){
+        var snap=lastConnMap[id];
+        if(!state.recentConns.some(function(x){return x.id===id;})){
+          snap.endedAt=new Date().toLocaleTimeString("zh-CN",{hour12:false});
+          state.recentConns.unshift(snap);
+          if(state.recentConns.length>20) state.recentConns.length=20;
+        }
+        delete lastConnMap[id];
+      }
+    });
+    renderRecentConns();
+    if(!list.length){ el.innerHTML='<div class="empty">当前没有活跃连接</div>'; return; }
+    el.innerHTML=list.map(function(c){ return connRow(c, false); }).join("");
+  }catch(e){ el.innerHTML='<div class="empty">读取失败</div>'; }
+}
+function startConnPolling(){ stopConnPolling(); renderConns(); connTimer=setInterval(renderConns,1000); }
+
+/* ---------- 规则 / 设置 ---------- */
+function addRule(){
+  openSheet('<h3>新增规则</h3><label>类型</label><select id="rType"><option>DOMAIN-SUFFIX</option><option>DOMAIN</option><option>DOMAIN-KEYWORD</option><option>IP-CIDR</option><option>GEOIP</option></select><label>值</label><input id="rVal" placeholder="例如 google.com"><label>目标</label><select id="rTarget"><option>PROXY</option><option>DIRECT</option></select><div class="row"><button class="btn" onclick="doAddRule()">保存</button><button class="btn ghost" onclick="closeSheet()">取消</button></div>');
+}
+function doAddRule(){
+  var t=$("rType").value, v=$("rVal").value.trim(), tg=$("rTarget").value;
+  var r={type:t, value:v, target:tg}; state.rules.splice(state.rules.length-1,0,r); save(); renderRules(); closeSheet(); toast("规则已添加（重启连接后生效）");
+}
+function delRule(i){ state.rules.splice(i,1); save(); renderRules(); }
+function resetRules(){ state.rules=JSON.parse(JSON.stringify(DEFAULT_RULES)); save(); renderRules(); toast("已恢复默认规则"); }
+function saveSettings(){
+  if($("setMixed")) state.settings.mixed=parseInt($("setMixed").value,10)||7890;
+  if($("setExt")) state.settings.ext=parseInt($("setExt").value,10)||9090;
+  if($("setLan")) state.settings.allowLan=$("setLan").checked;
+  if($("setTun")) state.settings.tun=$("setTun").checked;
+  if($("setDns")) state.settings.dns=$("setDns").checked;
+  if($("setLog")) state.settings.log=$("setLog").value;
+  save(); renderHome(); toast("设置已保存，重启连接后生效");
+}
+function viewLog(){
+  var log="（无日志）";
+  if(hasBridge()){ try{ var r=JSON.parse(AndroidBridge.getCoreLog()); log=r.log||log; }catch(e){ log="读取日志失败："+e; } }
+  openSheet('<h3>核心日志（最近 200 行）</h3><pre class="log">'+esc(log)+'</pre><div class="row"><button class="btn ghost" onclick="closeSheet()">关闭</button></div>');
+}
+
+load(); applyTheme(); renderHome(); renderNodes(); renderSubs(); renderRules();
+if(hasBridge()){ try{ var info=JSON.parse(AndroidBridge.getInfo()); var abiTxt=""; try{ var ab=JSON.parse(AndroidBridge.getAbi()); abiTxt=" · ABI "+(ab.abi||""); }catch(e2){ if(info.abi) abiTxt=" · ABI "+info.abi; } var ai=$("aboutInfo"); if(ai) ai.textContent="设备 "+(info.model||"")+" · Android SDK "+(info.sdk||"")+abiTxt+" · "+(info["sing-box"]||""); var st=JSON.parse(AndroidBridge.coreStatus()); state.coreRunning=!!st.running; if(st.running){ state.connected=true; startPolling(); } renderHome(); maybeAutoUpdateSubs(); }catch(e){} }
+</script></body></html>
